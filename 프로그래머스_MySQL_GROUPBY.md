@@ -12,3 +12,26 @@ GROUP BY NAME HAVING cnt>=2 ORDER BY NAME ;
 ~~~
 WHERE절로 GROUP BY 앞에 cnt>=2 조건을 붙여봤지만 실행되지 않았음. 이유는 추후 알아봐야 
 
+
+
+#### 입양 시각 구하기(1)
+~~~MYSQL
+SELECT DATE_FORMAT(DATETIME,'%H') as HOUR , COUNT(*) FROM ANIMAL_OUTS 
+GROUP BY HOUR HAVING HOUR BETWEEN 09 AND 19 ORDER BY HOUR ; 
+~~~
+
+#### 입양 시각 구하기(2)
+~~~MYSQL
+WITH RECURSIVE TEMP 
+AS (SELECT 0 AS HOUR
+    UNION ALL 
+    SELECT HOUR+1 FROM TEMP WHERE HOUR<23)
+
+
+SELECT HOUR, COUNT(ANIMAL_ID)
+FROM TEMP AS T LEFT JOIN ANIMAL_OUTS AS A
+ON T.HOUR = HOUR(A.DATETIME)
+GROUP BY HOUR;
+~~~
+문제의 핵심은 데이터가 없는 시간대도 GROUP BY로 출력했을 때 0으로 카운트 되어서 출력되어야 한다는 점
+이를 해결하기 위해 WITH RECURSIVE문으로 TIMETABLE을 새로 만들었고, 이후 TIMETABLE을 기준으로 LEFT JOIN한 후 출력했다.
