@@ -30,3 +30,16 @@ ORDER BY INS.DATETIME
 LIMIT 3;
 ~~~
 LEFT TABLE에만 있는 것을 확인하기 위해선 LEFT OUTER JOIN 후 RIGHT TABLE의 NULL 값을 체크해보면 된다
+
+
+#### 있었는데요 없었습니다
+~~~MySQL
+SELECT INS.ANIMAL_ID, INS.NAME
+FROM ANIMAL_INS AS INS LEFT JOIN ANIMAL_OUTS AS OUTS ON INS.ANIMAL_ID = OUTS.ANIMAL_ID
+WHERE TIMESTAMPDIFF(SECOND, INS.DATETIME, OUTS.DATETIME) < 0 
+ORDER BY INS.DATETIME;
+~~~
+DATEDIFF 함수는 일 단위로 계산하는 함수라 같은 날 시각까지는 계산을 못해준다
+따라서 시점 A가 시점 B보다 빠른지 시간 단위까지 정확히 알기 위해서는 TIMESTAMPDIFF 함수를 사용해야 하는데, 
+이때 주의할 점은 'DATEDIFF(날짜1,날짜2)'는 '날짜1-날짜2' 이고 'TIMESTAMPDIFF(단위,날짜1,날짜2)'는 '날짜2 - 날짜1'이다
+이외에 시간을 계산하는 방식에 문제가 조금 차이가 있으니 확인해보면서 쿼리 작성하자
