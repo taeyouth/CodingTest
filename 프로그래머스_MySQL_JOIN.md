@@ -43,3 +43,14 @@ DATEDIFF 함수는 일 단위로 계산하는 함수라 같은 날 시각까지�
 따라서 시점 A가 시점 B보다 빠른지 시간 단위까지 정확히 알기 위해서는 TIMESTAMPDIFF 함수를 사용해야 하는데, 
 이때 주의할 점은 'DATEDIFF(날짜1,날짜2)'는 '날짜1-날짜2' 이고 'TIMESTAMPDIFF(단위,날짜1,날짜2)'는 '날짜2 - 날짜1'이다
 이외에 시간을 계산하는 방식에 문제가 조금 차이가 있으니 확인해보면서 쿼리 작성하자
+
+#### 보호소에서 중성화한 동물
+~~~MySQL
+SELECT INS.ANIMAL_ID, INS.ANIMAL_TYPE, INS.NAME
+FROM ANIMAL_INS AS INS LEFT JOIN ANIMAL_OUTS AS OUTS
+ON INS.ANIMAL_ID = OUTS.ANIMAL_ID
+WHERE INS.SEX_UPON_INTAKE NOT REGEXP ('Neutered|Spayed')
+AND OUTS.SEX_UPON_OUTCOME REGEXP ('Spayed|Neutered')
+ORDER BY INS.ANIMAL_ID ;
+~~~
+LIKE IN과 같은 기능을 하는 REGEXP는 앞에 NOT을 붙이면 말그대로 포함하지 않는 기능으로 작용한다
